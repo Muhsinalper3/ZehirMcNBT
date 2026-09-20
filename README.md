@@ -1,14 +1,25 @@
 # ZehirMcNBT
 
-Paper 26.2 icin kontrollu Unicode/PDC test eklentisi.
+Kontrollu Unicode + PersistentDataContainer test plugini.
 
-## Komut
-- /zehir
-- /zehir 64kb
-- /zehir 256kb
+## Windows'ta tek tikla JAR
 
-Bu proje gercek bir NBT exploit veya sunucu cokturtme payload'i icermez.
-Payload 256 KB ile sinirlidir.
+1. ZIP'i cikart.
+2. `build.bat` dosyasina cift tikla.
+3. Derleme tamamlaninca kok klasorde `ZehirMcNBT.jar` ve `dist/ZehirMcNBT.jar` olusur.
+4. JAR'i Paper sunucunun `plugins` klasorune koy.
 
-## Release
-Yeni bir tag push edildiginde GitHub Actions Java 25 ile JAR'i derler ve Release'a ekler.
+`build.bat`, Gradle Wrapper varsa onu; yoksa sistemdeki Gradle'i kullanir. Gradle dokumantasyonu da Wrapper'i standart build yontemi olarak oneriyor. citeturn0search0turn0search1
+
+## Komutlar
+
+- `/zehir`
+- `/zehir 64kb`
+- `/zehir 256kb`
+- `/zehir 1mb`
+- `/zehir 5mb`
+- `/zehir 10mb`
+- `/zehir 15mb`
+- `/zehir 20mb`
+
+Bu proje gercek NBT acigi veya sunucu crash/DoS payload'i kullanmaz; kontrollu Unicode/PDC stres testi yapar.
