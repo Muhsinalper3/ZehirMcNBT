@@ -1,0 +1,16 @@
+name: ZehirMcNBT
+version: 1.0.0
+main: com.muhsinalper.zehir.ZehirMcNBT
+api-version: '26.2'
+description: Safe Unicode and PDC book stress test
+author: TurboMinecraft
+
+commands:
+  zehir:
+    description: Gives a controlled Unicode test book
+    usage: /zehir [64kb|256kb]
+    permission: zehir.test
+
+permissions:
+  zehir.test:
+    default: op
