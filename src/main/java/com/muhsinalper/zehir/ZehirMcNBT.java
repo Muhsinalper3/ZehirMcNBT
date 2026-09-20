@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 
 public final class ZehirMcNBT extends JavaPlugin implements CommandExecutor {
     private static final int DEFAULT_BYTES = 64 * 1024;
-    private static final int MAX_BYTES = 256 * 1024;
+    private static final int MAX_BYTES = 20 * 1024 * 1024;
     private static final int CHUNK_BYTES = 30000;
 
     private NamespacedKey sizeKey;
@@ -31,7 +31,7 @@ public final class ZehirMcNBT extends JavaPlugin implements CommandExecutor {
         if (getCommand("zehir") != null) {
             getCommand("zehir").setExecutor(this);
         }
-        getLogger().info("ZehirMcNBT aktif.");
+        getLogger().info("ZehirMcNBT aktif. Kontrollu test limiti: 20 MB.");
     }
 
     @Override
@@ -49,18 +49,41 @@ public final class ZehirMcNBT extends JavaPlugin implements CommandExecutor {
         int size = DEFAULT_BYTES;
 
         if (args.length > 0) {
-            if (args[0].equalsIgnoreCase("256kb")) {
-                size = MAX_BYTES;
-            } else if (!args[0].equalsIgnoreCase("64kb")) {
-                player.sendMessage(Component.text("Kullanim: /zehir [64kb|256kb]"));
+            try {
+                size = parseSize(args[0]);
+            } catch (IllegalArgumentException ex) {
+                player.sendMessage(Component.text(
+                    "Kullanim: /zehir [64kb|256kb|1mb|5mb|10mb|15mb|20mb]"
+                ));
                 return true;
             }
         }
 
+        player.sendMessage(Component.text(
+            "Kontrollu test kitabi hazirlaniyor: " + formatBytes(size) + "."
+        ));
+
         ItemStack book = createBook(size);
         player.getInventory().addItem(book);
-        player.sendMessage(Component.text("Unicode test kitabi verildi: " + size + " byte."));
+        player.sendMessage(Component.text(
+            "Unicode/PDC test kitabi verildi: " + formatBytes(size) + "."
+        ));
         return true;
+    }
+
+    private int parseSize(String value) {
+        String s = value.toLowerCase();
+
+        return switch (s) {
+            case "64kb" -> 64 * 1024;
+            case "256kb" -> 256 * 1024;
+            case "1mb" -> 1 * 1024 * 1024;
+            case "5mb" -> 5 * 1024 * 1024;
+            case "10mb" -> 10 * 1024 * 1024;
+            case "15mb" -> 15 * 1024 * 1024;
+            case "20mb" -> 20 * 1024 * 1024;
+            default -> throw new IllegalArgumentException("Unsupported size");
+        };
     }
 
     private ItemStack createBook(int targetBytes) {
@@ -100,7 +123,7 @@ public final class ZehirMcNBT extends JavaPlugin implements CommandExecutor {
     private byte[] createPayload(int targetBytes) {
         String arabic = "ض";
         String emoji = "💥";
-        StringBuilder text = new StringBuilder();
+        StringBuilder text = new StringBuilder(targetBytes / 3);
         int bytes = 0;
 
         while (bytes + 2 <= targetBytes) {
@@ -121,5 +144,12 @@ public final class ZehirMcNBT extends JavaPlugin implements CommandExecutor {
         }
 
         return result;
+    }
+
+    private String formatBytes(int bytes) {
+        if (bytes >= 1024 * 1024) {
+            return (bytes / (1024 * 1024)) + " MB";
+        }
+        return (bytes / 1024) + " KB";
     }
 }
